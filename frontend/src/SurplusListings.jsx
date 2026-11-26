@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./SurplusListings.css";
 
 const API_URL = "http://localhost:5000/api/listings";
 
@@ -96,7 +97,7 @@ export default function SurplusListings() {
 
   return (
     <section className="listing-module">
-      <div className="hero">
+      <div className="listing-panel">
         <h2>Add surplus food</h2>
 
         <form className="listing-form" onSubmit={submitListing}>

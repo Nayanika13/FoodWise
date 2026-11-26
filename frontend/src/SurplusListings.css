@@ -1,0 +1,128 @@
+.listing-module {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #173b32;
+  box-sizing: border-box;
+}
+
+.listing-module h2 {
+  color: #173b32;
+  margin: 0 0 20px;
+  font-size: 24px;
+}
+
+.listing-module .listing-panel {
+  background: #fff;
+  border: 1px solid #dce9e3;
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 32px;
+  box-shadow: 0 6px 22px rgba(23, 59, 50, 0.06);
+}
+
+.listing-module .listing-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.listing-module label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.listing-module input,
+.listing-module select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #cbded5;
+  border-radius: 9px;
+  background: #f9fcfa;
+  color: #173b32;
+  font: inherit;
+}
+
+.listing-module input:focus,
+.listing-module select:focus {
+  outline: 2px solid #31936e;
+  outline-offset: 2px;
+}
+
+.listing-module button {
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 9px;
+  background: #19734f;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.listing-module button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.listing-module .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.listing-module .card {
+  background: #fff;
+  border: 1px solid #dce9e3;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(23, 59, 50, 0.05);
+}
+
+.listing-module .card strong {
+  font-size: 18px;
+  color: #173b32;
+}
+
+.listing-module .card p {
+  color: #52675e;
+  margin: 10px 0;
+}
+
+.listing-module .card span {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #e2f5e9;
+  color: #17613d;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.listing-module [role="alert"] {
+  color: #b42318;
+}
+
+.listing-module [role="status"] {
+  color: #17613d;
+}
+
+@media (max-width: 640px) {
+  .listing-module .listing-panel {
+    padding: 18px;
+  }
+
+  .listing-module .listing-form {
+    grid-template-columns: 1fr;
+  }
+
+  .listing-module .cards {
+    grid-template-columns: 1fr;
+  }
+}

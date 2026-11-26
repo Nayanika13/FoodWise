@@ -17,10 +17,12 @@ const FoodListingSchema = new mongoose.Schema(
     sourceName: { type: String, required: true, trim: true },
     expiryAt: { type: Date, required: true },
     status: {
-      type: String,
-      enum: ["available", "reserved", "collected", "expired"],
-      default: "available",
-    },
+  type: String,
+  enum: ["available", "reserved", "collected", "expired"],
+  default: "available",
+},
+reservedBy: { type: String, trim: true },
+reservedAt: { type: Date },
   },
   { timestamps: true }
 );

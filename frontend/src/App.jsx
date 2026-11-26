@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import SurplusListings from "./SurplusListings";
+import Redistribution from "./Redistribution";
 
 const modules = [
   "Dashboard",
@@ -256,8 +257,10 @@ useEffect(() => {
               </div>
             </>
                    ) : active === "Surplus Listings" ? (
-            <SurplusListings />
-          ) : (
+           <SurplusListings />
+           ) : active === "Redistribution" ? (
+          <Redistribution />
+            ) : (
             <section className="hero">
               <h2>{active}</h2>
               <p>
