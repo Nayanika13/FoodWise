@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const modules = [
   "Dashboard",
@@ -21,6 +21,46 @@ const descriptions = {
 export default function App() {
   const [active, setActive] = useState("Dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [health, setHealth] = useState({
+  status: "checking",
+  database: "checking",
+});
+
+useEffect(() => {
+  const controller = new AbortController();
+
+  async function checkHealth() {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/health",
+        { signal: controller.signal }
+      );
+
+      if (!response.ok) {
+        throw new Error("Health check failed");
+      }
+
+      const data = await response.json();
+      setHealth(data);
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        setHealth({
+          status: "offline",
+          database: "unknown",
+        });
+      }
+    }
+  }
+
+  checkHealth();
+
+  const interval = setInterval(checkHealth, 30000);
+
+  return () => {
+    controller.abort();
+    clearInterval(interval);
+  };
+}, []);
 
   function navigate(module) {
     setActive(module);
@@ -153,6 +193,20 @@ export default function App() {
               </section>
 
               <h2>Explore modules</h2>
+              <section
+               className="hero"
+              aria-live="polite"
+              >
+             <h2>System status</h2>
+
+              <p>
+              API: {health.status}
+             </p>
+
+            <p>
+            Database: {health.database}
+             </p>
+             </section>
               <div className="cards">
                 {modules.slice(1).map((module) => (
                   <button
