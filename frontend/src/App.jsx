@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SurplusListings from "./SurplusListings";
 
 const modules = [
   "Dashboard",
@@ -136,6 +137,39 @@ useEffect(() => {
         .card strong { display: block; font-size: 18px; }
         .card p { color: #526856; line-height: 1.5; }
         .menu { display: none; }
+        .listing-form {
+         display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+         gap: 16px;
+        }
+
+       .listing-form label {
+      display: grid;
+     gap: 6px;
+      font-weight: 600;
+      }
+
+     .listing-form input,
+     .listing-form select {
+      width: 100%;
+     padding: 10px;
+     border: 1px solid #a8b99e;
+     border-radius: 8px;
+     font: inherit;
+    }
+
+    .listing-form button,
+   .listing-module > button {
+    padding: 12px 18px;
+    border-radius: 8px;
+   background: #173c2d;
+     color: white;
+    }
+
+     button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+     }
         @media (max-width: 720px) {
           .shell { display: block; }
           .sidebar { width: 100%; padding: 16px; }
@@ -221,6 +255,8 @@ useEffect(() => {
                 ))}
               </div>
             </>
+                   ) : active === "Surplus Listings" ? (
+            <SurplusListings />
           ) : (
             <section className="hero">
               <h2>{active}</h2>
