@@ -3,5 +3,7 @@ node_modules/
 .env.*
 !.env.example
 dist/
-__pycache__/
+
 .venv/
+__pycache__/
+*.pyc

@@ -20,6 +20,27 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+
+app.get("/api/ai/health", async (req, res) => {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/health");
+
+    if (!response.ok) {
+      return res.status(502).json({
+        status: "error",
+        aiService: "unavailable"
+      });
+    }
+
+    const data = await response.json();
+    return res.json(data);
+  } catch (error) {
+    return res.status(503).json({
+      status: "error",
+      aiService: "unavailable"
+    });
+  }
+});
 async function startServer() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
