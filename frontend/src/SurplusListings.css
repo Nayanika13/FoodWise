@@ -1,128 +1,971 @@
-.listing-module {
+/* FOODWISE — RECOVERY WORKSPACE */
+
+.listing-module,
+.listing-panel {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  color: #173b32;
+  min-width: 0;
+}
+
+/* Main workflow panels */
+
+.listing-panel {
+  position: relative;
+  padding: 28px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 6px 22px rgba(16, 46, 36, 0.05);
+  overflow: hidden;
+}
+
+.listing-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--forest-700),
+    var(--sage-500),
+    var(--sage-200)
+  );
+}
+
+.listing-panel h2 {
+  margin: 0 0 24px;
+  color: var(--forest-950);
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.8px;
+}
+
+.listing-panel h3 {
+  margin: 30px 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--forest-900);
+  font-size: 19px;
+  letter-spacing: -0.4px;
+}
+
+/* Food listing form */
+
+.listing-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  padding: 22px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.listing-form label,
+.listing-panel label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--forest-900);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.listing-panel input,
+.listing-panel select,
+.listing-panel textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  transition: border-color 160ms ease,
+              box-shadow 160ms ease;
+}
+
+.listing-panel input:focus,
+.listing-panel select:focus,
+.listing-panel textarea:focus {
+  border-color: var(--forest-600);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(50, 128, 94, 0.15);
+}
+
+/* Primary actions */
+
+.listing-panel button,
+.listing-module button {
+  min-height: 44px;
+  padding: 11px 20px;
+  border: 1px solid var(--forest-900);
+  border-radius: 10px;
+  background: var(--forest-900);
+  color: white;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 160ms ease,
+              transform 160ms ease,
+              box-shadow 160ms ease;
+}
+
+.listing-panel button:hover,
+.listing-module button:hover {
+  background: var(--forest-700);
+  box-shadow: 0 4px 12px rgba(16, 46, 36, 0.15);
+}
+
+.listing-panel button:active,
+.listing-module button:active {
+  transform: translateY(1px);
+}
+
+.listing-panel button:disabled,
+.listing-module button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Listing inventory */
+
+.listing-module > h2 {
+  margin: 32px 0 16px;
+  color: var(--forest-950);
+  font-size: 23px;
+  letter-spacing: -0.6px;
+}
+
+.listing-panel .cards,
+.listing-module .cards {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(260px, 1fr)
+  );
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.listing-panel .card,
+.listing-module .card {
+  position: relative;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--sage-500);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgba(16, 46, 36, 0.05);
+  transition: transform 160ms ease,
+              box-shadow 160ms ease,
+              border-color 160ms ease;
+}
+
+.listing-panel .card:hover,
+.listing-module .card:hover {
+  transform: translateY(-2px);
+  border-left-color: var(--forest-700);
+  box-shadow: var(--shadow-md);
+}
+
+.listing-panel .card h3,
+.listing-module .card h3 {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  color: var(--forest-950);
+  font-size: 19px;
+}
+
+.listing-panel .card p,
+.listing-module .card p {
+  margin: 7px 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.listing-panel .card button,
+.listing-module .card button {
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* Empty inventory */
+
+.listing-panel > p,
+.listing-module > p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.listing-panel > p:only-of-type {
+  padding: 14px 18px;
+  border: 1px dashed var(--sage-500);
+  border-radius: 10px;
+  background: var(--sage-100);
+}
+
+/* Responsive workspace */
+
+@media (max-width: 700px) {
+  .listing-panel {
+    padding: 18px;
+  }
+
+  .listing-form {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .listing-panel .cards,
+  .listing-module .cards {
+    grid-template-columns: 1fr;
+  }
+}
+/* FoodWise — improved redistribution typography */
+
+.listing-panel h2 {
+  font-size: clamp(26px, 3vw, 32px);
+  font-weight: 750;
+  line-height: 1.2;
+  margin-bottom: 28px;
+}
+
+.listing-panel label {
+  display: block;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.5;
+  color: var(--forest-900);
+  margin-bottom: 12px;
+}
+
+.listing-panel input,
+.listing-panel select {
+  min-height: 48px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--sage-500);
+  border-radius: 10px;
+  font-size: 16px;
+  line-height: 1.4;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.listing-panel input:focus,
+.listing-panel select:focus {
+  border-color: var(--forest-700);
+  outline: 3px solid var(--sage-200);
+  outline-offset: 2px;
+}
+
+.listing-panel h3 {
+  font-size: 21px;
+  line-height: 1.3;
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.listing-panel button {
+  min-height: 46px;
+  padding: 12px 22px;
+  font-size: 15px;
+  border-radius: 10px;
+}
+/* Enlarge and centre the NGO name label */
+.redistribution-panel label {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--forest-900);
+  margin-bottom: 16px;
+}
+.listing-panel label {
+  font-size: 22px;
+  font-weight: 700;
+}
+/* Add space above the NGO name text box */
+.listing-panel input {
+  margin-top: 10px !important;
+}
+/* Reduce the gap above the Load NGO Listings button */
+.listing-panel input + button {
+  margin-top: 0px !important;
+}
+/* Compact NGO access panel */
+.ngo-access-panel {
+  padding: 18px 20px;
+  background: #f5f7f2;
+  border: 1px solid #d3e4c8;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.ngo-access-panel .ngo-access-heading {
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #d3e4c8;
+}
+
+.ngo-access-panel .ngo-access-heading h3 {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 26px;
+  line-height: 1.15;
+  color: #173c2d;
+}
+
+.ngo-access-panel .ngo-access-heading p {
+  margin: 3px 0 0;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #53675b;
+}
+
+.ngo-access-panel .ngo-access-input {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.ngo-access-panel input {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  margin: 0;
+  padding: 10px 12px;
   box-sizing: border-box;
 }
 
-.listing-module h2 {
-  color: #173b32;
-  margin: 0 0 20px;
-  font-size: 24px;
+.ngo-access-panel button {
+  width: auto;
+  margin: 0;
+  padding: 10px 16px;
+  white-space: nowrap;
 }
 
-.listing-module .listing-panel {
-  background: #fff;
-  border: 1px solid #dce9e3;
-  border-radius: 18px;
-  padding: 28px;
-  margin-bottom: 32px;
-  box-shadow: 0 6px 22px rgba(23, 59, 50, 0.06);
+@media (max-width: 600px) {
+  .ngo-access-panel .ngo-access-input {
+    flex-direction: column;
+  }
+}\.redistribution-panel .ngo-access-input {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 10px;
 }
+
+.redistribution-panel .ngo-access-input input {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+.redistribution-panel .ngo-access-input button {
+  width: auto;
+  white-space: nowrap;
+}
+/* FoodWise — redistribution food cards */
+.redistribution-panel .card {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--sage-500);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgba(16, 46, 36, 0.06);
+}
+
+.redistribution-panel .card h4 {
+  margin: 0 0 10px;
+  color: var(--forest-950);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.redistribution-panel .card p {
+  margin: 5px 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.redistribution-panel .card button {
+  margin-top: 14px;
+}
+/* Redistribution card information */
+.redistribution-panel .food-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.redistribution-panel .food-card-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  background: var(--sage-100);
+  border-radius: 10px;
+  font-size: 22px;
+}
+
+.redistribution-panel .food-card-heading h4 {
+  margin: 0;
+  font-size: 19px;
+  color: var(--forest-950);
+}
+
+.redistribution-panel .food-card-source {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.redistribution-panel .food-card-quantity {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.redistribution-panel .food-card-quantity strong {
+  color: var(--forest-900);
+}
+/* Redistribution card actions */
+.redistribution-panel .card button {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.redistribution-panel .card button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(16, 46, 36, 0.15);
+}
+/* Responsive Redistribution card grid */
+.redistribution-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.redistribution-cards .card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+}
+
+.redistribution-cards .card button {
+  margin-top: auto;
+}
+
+@media (max-width: 600px) {
+  .redistribution-cards {
+    grid-template-columns: 1fr;
+  }
+}
+/* FOODWISE — balanced surplus listing form */
 
 .listing-module .listing-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 20px 24px;
+  align-items: start;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
-.listing-module label {
+/* Equal label alignment */
+
+.listing-module .listing-form > label {
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  font-size: 14px;
-  font-weight: 600;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  color: var(--forest-900);
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.4;
+  text-align: left;
 }
 
-.listing-module input,
-.listing-module select {
+/* Equal input dimensions */
+
+.listing-module .listing-form input:not([type="file"]),
+.listing-module .listing-form select,
+.listing-module .listing-form textarea {
+  display: block;
   width: 100%;
   min-width: 0;
+  min-height: 48px;
+  height: 48px;
+  margin: 0 !important;
+  padding: 10px 14px;
   box-sizing: border-box;
-  padding: 12px;
-  border: 1px solid #cbded5;
-  border-radius: 9px;
-  background: #f9fcfa;
-  color: #173b32;
+  border: 1px solid var(--sage-500);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
   font: inherit;
+  font-size: 15px;
 }
 
-.listing-module input:focus,
-.listing-module select:focus {
-  outline: 2px solid #31936e;
-  outline-offset: 2px;
+.listing-module .listing-form textarea {
+  height: 84px;
+  resize: vertical;
 }
 
-.listing-module button {
-  padding: 11px 18px;
+/* Dedicated photo section */
+
+.listing-module .listing-photo-section {
+  grid-column: 1 / -1;
+  padding: 18px 20px;
+  border: 1px dashed var(--sage-500);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.listing-module .listing-photo-section h3 {
+  margin: 0 0 6px;
+  padding: 0;
   border: 0;
-  border-radius: 9px;
-  background: #19734f;
+  color: var(--forest-900);
+  font-size: 18px;
+}
+
+.listing-module .listing-photo-section p {
+  margin: 0 0 12px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.listing-module .photo-upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  padding: 10px 20px;
+  margin: 0;
+  border-radius: 10px;
+  background: var(--forest-900);
   color: white;
-  font: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.listing-module .photo-upload-button:hover {
+  background: var(--forest-700);
+}
+
+.listing-module .photo-upload-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.listing-module .listing-photo-section .selected-photo-name {
+  margin: 10px 0 0;
+  overflow-wrap: anywhere;
+}
+
+/* Full-width submit button */
+
+.listing-module .listing-form button[type="submit"] {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0;
+}
+
+/* Mobile layout */
+
+@media (max-width: 700px) {
+  .listing-module .listing-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+}
+/* Surplus listing form sections */
+.listing-module .listing-form > .form-section-title {
+  grid-column: 1 / -1;
+  margin: 12px 0 0;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--forest-900);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.listing-module .listing-form > label:has([name="pickupAddress"]) {
+  grid-column: 1 / -1;
+}
+.listing-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(20, 45, 30, 0.55);
+}
+
+.listing-modal {
+  width: min(100%, 520px);
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid #dce5da;
+  box-shadow: 0 18px 50px rgba(20, 45, 30, 0.2);
+}
+.listing-detail-photo {
+  display: block;
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+.listing-modal-footer {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8df;
+}
+
+.listing-close-bottom {
+  background: #315c45;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
 
-.listing-module button:disabled {
+.listing-close-bottom:hover {
+  background: #244936;
+}
+.listing-modal-footer {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8df;
+}
+
+.listing-close-bottom {
+  position: static;
+  background: #315c45;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  cursor: pointer;
+}
+
+.listing-close-bottom:hover {
+  background: #244936;
+}
+.redistribution-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8df;
+}
+
+.redistribution-modal-footer button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.redistribution-modal-footer button:first-child {
+  background: #f1f5ef;
+  color: #315c45;
+  border: 1px solid #d7e2d5;
+}
+
+.redistribution-modal-footer button:last-child {
+  background: #315c45;
+  color: white;
+  border: 1px solid #315c45;
+}
+
+.redistribution-modal-footer button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-
-.listing-module .cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
-  margin-top: 20px;
-}
-
-.listing-module .card {
-  background: #fff;
-  border: 1px solid #dce9e3;
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 4px 14px rgba(23, 59, 50, 0.05);
-}
-
-.listing-module .card strong {
-  font-size: 18px;
-  color: #173b32;
-}
-
-.listing-module .card p {
-  color: #52675e;
-  margin: 10px 0;
-}
-
-.listing-module .card span {
+.pickup-action-link {
   display: inline-block;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background: #e2f5e9;
-  color: #17613d;
+  color: #315c45;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-bottom: 8px;
+}
+
+.pickup-action-link:hover {
+  color: #1d422f;
+}
+/* Compact food photos in Redistribution */
+.redistribution-panel .food-card-photo {
+  display: block;
+  width: 100%;
+  height: 120px;
+  max-height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Compact food photos — full image visible */
+.redistribution-panel .food-card-photo {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  object-position: center;
+  background: #f1f5ef;
+  border-radius: 10px;
+}
+
+/* Smaller photos inside details and confirmation windows */
+.redistribution-panel [role="dialog"] .food-card-photo {
+  height: 110px;
+  max-height: 110px;
+}
+/* Compact photo upload section */
+.listing-photo-section .photo-upload-button {
+  background: #dcebdd;
+  color: #28543a;
+  border: 1px solid #b8d4bb;
+  padding: 8px 14px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-.listing-module [role="alert"] {
-  color: #b42318;
+.listing-photo-section .photo-upload-button:hover {
+  background: #c9e2cc;
 }
 
-.listing-module [role="status"] {
-  color: #17613d;
+/* Selected photo row */
+.listing-photo-section .selected-photo-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  margin-top: 6px;
+  background: #f5f8f3;
+  border: 1px solid #e0e9dd;
+  border-radius: 8px;
+  color: #354d3a;
+  font-size: 13px;
 }
 
-@media (max-width: 640px) {
-  .listing-module .listing-panel {
-    padding: 18px;
-  }
+/* Small, subtle remove button */
+.listing-photo-section .selected-photo-name button {
+  flex-shrink: 0;
+  width: auto;
+  min-width: 0;
+  padding: 4px 9px;
+  border: 1px solid #e5c6c6;
+  border-radius: 6px;
+  background: #fff0f0;
+  color: #a33c3c;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  cursor: pointer;
+}
 
-  .listing-module .listing-form {
-    grid-template-columns: 1fr;
-  }
+.listing-photo-section .selected-photo-name button:hover {
+  background: #f8dede;
+}
 
-  .listing-module .cards {
-    grid-template-columns: 1fr;
-  }
+.listing-photo-section button:focus-visible,
+.listing-photo-section .photo-upload-button:focus-within {
+  outline: 2px solid #39734c;
+  outline-offset: 3px;
+}
+/* Compact Redistribution photo gallery */
+.redistribution-panel .food-photo-gallery {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 8px 2px 12px;
+  margin-bottom: 12px;
+  scroll-snap-type: x proximity;
+}
+
+.redistribution-panel .food-photo-gallery img {
+  flex: 0 0 145px;
+  width: 145px;
+  height: 110px;
+  object-fit: contain;
+  background: #f1f5ef;
+  border: 1px solid #dce7d9;
+  border-radius: 10px;
+  scroll-snap-align: start;
+}
+/* Compact food photo gallery */
+.redistribution-panel .food-photo-gallery {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 6px 2px 12px;
+  margin-bottom: 12px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #9db7a1 #edf3ed;
+}
+
+.redistribution-panel .food-photo-gallery img {
+  flex: 0 0 145px;
+  width: 145px;
+  height: 105px;
+  object-fit: contain;
+  background: #f3f7f2;
+  border: 1px solid #dce7dc;
+  border-radius: 10px;
+  scroll-snap-align: start;
+}
+
+.redistribution-panel .food-card-photo {
+  width: 100%;
+  height: 145px;
+  object-fit: contain;
+  background: #f3f7f2;
+  border-radius: 10px;
+}
+/* Clickable food photos */
+.food-photo-trigger {
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  flex-shrink: 0;
+}
+
+.food-photo-trigger:focus-visible {
+  outline: 3px solid #4b8057;
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+.food-photo-trigger:hover img {
+  opacity: 0.9;
+}
+
+/* Full-screen photo viewer */
+.food-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 25, 18, 0.88);
+}
+
+.food-lightbox-content {
+  position: relative;
+  max-width: 95vw;
+  max-height: 90vh;
+  padding: 12px;
+  background: #f3f7f2;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.food-lightbox-image {
+  display: block;
+  max-width: 88vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.food-lightbox-close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 36px;
+  height: 36px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background:beige;
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.food-lightbox-image {
+  border-color: #dce7d8 !important;
+}
+/* Pale sage borders for all Redistribution photos */
+.food-photo-trigger,
+.food-photo-trigger img,
+.food-photo-gallery img,
+.food-lightbox-content,
+.food-lightbox-image {
+  border-color: #dce7d8 !important;
+}
+/* Redistribution: pale photo frames */
+.food-photo-trigger {
+  background: #edf3e9 !important;
+  border: 1px solid #dce7d8 !important;
+  box-shadow: none !important;
+}
+
+.food-photo-trigger:hover,
+.food-photo-trigger:focus-visible {
+  background: #edf3e9 !important;
+  border-color: #cbdac5 !important;
+}
+
+.food-photo-trigger img,
+.food-photo-gallery img {
+  border-color: #dce7d8 !important;
 }

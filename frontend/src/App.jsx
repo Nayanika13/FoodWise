@@ -1,56 +1,101 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import SurplusListings from "./SurplusListings";
 import Redistribution from "./Redistribution";
+import "./App.css";
+import {
+  LayoutDashboard,
+  ChartNoAxesCombined,
+  ClipboardList,
+  HandHeart,
+  Store,
+  ChartPie,
+  Menu,
+  ArrowRight,
+  Sprout
+} from "lucide-react";
 
 const modules = [
-  "Dashboard",
-  "Forecasting",
-  "Surplus Listings",
-  "Redistribution",
-  "Retail Partners",
-  "Impact Analytics",
+  { name: "Dashboard", icon: LayoutDashboard, desc: "Your food-waste prevention overview" },
+  { name: "Forecasting", icon: ChartNoAxesCombined, desc: "Plan demand and prevent surplus" },
+  { name: "Surplus Listings", icon: ClipboardList, desc: "Create and manage surplus food listings" },
+  { name: "Redistribution", icon: HandHeart, desc: "Connect surplus food with NGOs" },
+  { name: "Retail Partners", icon: Store, desc: "Manage near-expiry retail opportunities" },
+  { name: "Impact Analytics", icon: ChartPie, desc: "Track food recovery and prevention impact" },
 ];
 
-const descriptions = {
-  Dashboard: "Your food-waste prevention overview",
-  Forecasting: "Plan demand and prevent excess food",
-  "Surplus Listings": "Manage available surplus food",
-  Redistribution: "Coordinate food recovery and donations",
-  "Retail Partners": "Connect stores with food recovery partners",
-  "Impact Analytics": "Track food saved and environmental impact",
-};
-
-export default function App() {
+function App() {
   const [active, setActive] = useState("Dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [health, setHealth] = useState({
-  status: "checking",
-  database: "checking",
-});
+  const [health, setHealth] = useState("checking");
+const [summary, setSummary] = useState(null);
+const [listingsError, setListingsError] = useState(false);
+const [refreshKey, setRefreshKey] = useState(0);
+const [refreshing, setRefreshing] = useState(false);
+const [lastUpdated, setLastUpdated] = useState(null);
 
+// Fetch dashboard summary
 useEffect(() => {
-  const controller = new AbortController();
+  if (active !== "Dashboard") return;
+
+  let cancelled = false;
+
+  async function loadSummary() {
+      setRefreshing(true);
+    setListingsError(false);
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/listings/summary"
+      );
+
+      if (!response.ok) {
+        throw new Error("Summary failed");
+      }
+
+      const data = await response.json();
+
+      if (!cancelled) {
+        setSummary(data);
+        setLastUpdated(new Date().toLocaleTimeString());
+      }
+    } catch (error) {
+      console.error("Dashboard summary error:", error);
+
+      if (!cancelled) {
+        setListingsError(true);
+      }
+    } finally {
+      if (!cancelled) {
+        setRefreshing(false);
+      }
+    }
+  }
+
+  loadSummary();
+
+  return () => {
+    cancelled = true;
+  };
+}, [active, refreshKey]);
+
+
+// Check backend connection
+useEffect(() => {
+  let cancelled = false;
 
   async function checkHealth() {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/health",
-        { signal: controller.signal }
+        "http://localhost:5000/api/health"
       );
 
       if (!response.ok) {
-        throw new Error("Health check failed");
+        throw new Error("Backend offline");
       }
 
-      const data = await response.json();
-      setHealth(data);
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        setHealth({
-          status: "offline",
-          database: "unknown",
-        });
-      }
+      if (!cancelled) setHealth("online");
+    } catch {
+      if (!cancelled) setHealth("offline");
     }
   }
 
@@ -59,221 +104,243 @@ useEffect(() => {
   const interval = setInterval(checkHealth, 30000);
 
   return () => {
-    controller.abort();
+    cancelled = true;
     clearInterval(interval);
   };
 }, []);
-
-  function navigate(module) {
-    setActive(module);
+ 
+  function navigate(page) {
+    setActive(page);
     setMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  const current = modules.find((item) => item.name === active);
+
   return (
-    <>
-      <style>{`
-        * { box-sizing: border-box; }
-        body {
-          margin: 0;
-          font-family: system-ui, sans-serif;
-          background: #f4f6ef;
-          color: #173c2d;
-        }
-        #root { min-height: 100vh; }
-        .shell { display: flex; min-height: 100vh; }
-        .sidebar {
-          width: 245px;
-          padding: 28px 18px;
-          background: #173c2d;
-          color: white;
-          flex-shrink: 0;
-        }
-        .brand { font-size: 27px; font-weight: 800; }
-        .tagline { color: #b8cbb9; font-size: 13px; }
-        nav { display: grid; gap: 8px; margin-top: 40px; }
-        button {
-          font: inherit;
-          cursor: pointer;
-          border: 0;
-        }
-        nav button {
-          text-align: left;
-          padding: 13px;
-          border-radius: 9px;
-          color: #d8e5d9;
-          background: transparent;
-        }
-        nav button:hover, nav button.active {
-          background: #dceab4;
-          color: #173c2d;
-        }
-        main { flex: 1; padding: 36px; min-width: 0; }
-        .eyebrow {
-          font-size: 12px;
-          letter-spacing: 2px;
-          font-weight: 700;
-          color: #66805a;
-        }
-        h1 { font-size: clamp(28px, 4vw, 42px); margin: 12px 0; }
-        .hero {
-          background: #dceab4;
-          border-radius: 20px;
-          padding: 28px;
-          margin: 28px 0;
-        }
-        .cards {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-          gap: 16px;
-        }
-        .card {
-          background: white;
-          border: 1px solid #dce4d5;
-          border-radius: 14px;
-          padding: 22px;
-          text-align: left;
-          color: #173c2d;
-        }
-        .card:hover { border-color: #66805a; }
-        .card strong { display: block; font-size: 18px; }
-        .card p { color: #526856; line-height: 1.5; }
-        .menu { display: none; }
-        .listing-form {
-         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-         gap: 16px;
-        }
+    <div className="app-shell">
+      {menuOpen && (
+        <button
+          className="sidebar-overlay"
+          aria-label="Close navigation"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
 
-       .listing-form label {
-      display: grid;
-     gap: 6px;
-      font-weight: 600;
-      }
+      <aside className={`sidebar ${menuOpen ? "sidebar--open" : ""}`}>
+        <div className="brand">
+          <div className="brand-mark" aria-hidden="true">F</div>
+          <div>
+            <div className="brand-name">FoodWise</div>
+            <div className="brand-caption">PREVENTION TO RECOVERY</div>
+          </div>
+        </div>
 
-     .listing-form input,
-     .listing-form select {
-      width: 100%;
-     padding: 10px;
-     border: 1px solid #a8b99e;
-     border-radius: 8px;
-     font: inherit;
-    }
+        <div className="nav-caption">WORKSPACE</div>
+        <nav aria-label="Main navigation">
+          {modules.map((item) => (
+            <button
+              key={item.name}
+              className={`nav-item ${active === item.name ? "nav-item--active" : ""}`}
+              onClick={() => navigate(item.name)}
+              aria-current={active === item.name ? "page" : undefined}
+            >
+             <span className="nav-icon" aria-hidden="true">
+  <item.icon size={20} strokeWidth={1.8} />
+</span>
+              {item.name}
+            </button>
+          ))}
+        </nav>
 
-    .listing-form button,
-   .listing-module > button {
-    padding: 12px 18px;
-    border-radius: 8px;
-   background: #173c2d;
-     color: white;
-    }
+        <div className="sidebar-footer">
+          <span className={`health-dot health-dot--${health}`} />
+          <div>
+            <strong>System status</strong>
+            <small>
+              {health === "online" ? "Backend connected" :
+               health === "offline" ? "Backend offline" : "Checking connection"}
+            </small>
+          </div>
+        </div>
+      </aside>
 
-     button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-     }
-        @media (max-width: 720px) {
-          .shell { display: block; }
-          .sidebar { width: 100%; padding: 16px; }
-          .menu {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 9px 14px;
-            border-radius: 8px;
-          }
-          nav { display: none; margin-top: 12px; }
-          nav.open { display: grid; }
-          main { padding: 20px; }
-        }
-      `}</style>
-
-      <div className="shell">
-        <aside className="sidebar">
-          <div className="brand">FoodWise</div>
-          <div className="tagline">Prevent. Recover. Impact.</div>
-
+      <main className="main-area">
+        <header className="topbar">
           <button
-            className="menu"
-            onClick={() => setMenuOpen(!menuOpen)}
+            className="menu-toggle"
+            aria-label="Open navigation"
             aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(!menuOpen)}
           >
-            {menuOpen ? "Close menu" : "Open menu"}
+            <Menu size={22} />
           </button>
+          <div>
+            <span className="topbar-label">FoodWise workspace</span>
+            <div className="breadcrumb">Workspace / {active}</div>
+          </div>
+          <span className="workspace-pill">Food waste ecosystem</span>
+        </header>
 
-          <nav className={menuOpen ? "open" : ""}>
-            {modules.map((module) => (
-              <button
-                key={module}
-                className={active === module ? "active" : ""}
-                onClick={() => navigate(module)}
-              >
-                {module}
-              </button>
-            ))}
-          </nav>
-        </aside>
-
-        <main>
-          <div className="eyebrow">FOODWISE PLATFORM</div>
-          <h1>{active}</h1>
-          <p>{descriptions[active]}</p>
-
+        <div className="page-content">
           {active === "Dashboard" ? (
             <>
-              <section className="hero">
-                <h2>Every meal matters.</h2>
-                <p>
-                  Prevent food waste through smarter planning,
-                  surplus recovery, and connected partnerships.
-                </p>
+              <section className="dashboard-hero">
+                <div className="hero-content">
+                  <span className="hero-eyebrow">FOODWISE • OPERATIONS</span>
+                  <h1>Less waste.<br />More impact.</h1>
+                  <p>
+                    Prevent surplus, redistribute food and connect partners
+                    through one intelligent ecosystem.
+                  </p>
+                  <button
+                    className="hero-button"
+                    onClick={() => navigate("Surplus Listings")}
+                  >
+                    Explore surplus listings <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+                <div className="hero-art" aria-hidden="true">
+                  <div className="orbit orbit-outer" />
+                  <div className="orbit orbit-inner" />
+                <div className="hero-symbol">
+  <Sprout size={105} strokeWidth={1.2} />
+</div>
+                  <span className="orbit-dot" />
+                </div>
               </section>
 
-              <h2>Explore modules</h2>
-              <section
-               className="hero"
-              aria-live="polite"
-              >
-             <h2>System status</h2>
+              <div className="section-heading">
+                <div>
+                  <p className="section-kicker">WORKSPACE</p>
+                  <h2>Explore modules</h2>
+                </div>
+                <span className="module-count">6 modules</span>
+              </div>
 
-              <p>
-              API: {health.status}
-             </p>
-
-            <p>
-            Database: {health.database}
-             </p>
-             </section>
-              <div className="cards">
-                {modules.slice(1).map((module) => (
+              <div className="module-grid">
+                {modules.filter((item) => item.name !== "Dashboard").map((item) => (
                   <button
-                    className="card"
-                    key={module}
-                    onClick={() => navigate(module)}
+                    key={item.name}
+                    className="module-card"
+                    onClick={() => navigate(item.name)}
                   >
-                    <strong>{module}</strong>
-                    <p>{descriptions[module]}</p>
-                    <span>Open module →</span>
+                    <span className="module-icon" aria-hidden="true"><item.icon size={20} strokeWidth={1.8} /></span>
+                <strong>{item.name}</strong>
+<span className={
+  ["Surplus Listings", "Redistribution"].includes(item.name)
+    ? "module-status module-status--ready"
+    : "module-status module-status--planned"
+}>
+  {["Surplus Listings", "Redistribution"].includes(item.name)
+    ? "Available"
+    : "Planned"}
+</span>
+                    <span className="module-description">{item.desc}</span>
+                    <span className="module-link">Open module →</span>
                   </button>
                 ))}
               </div>
             </>
-                   ) : active === "Surplus Listings" ? (
-           <SurplusListings />
-           ) : active === "Redistribution" ? (
-          <Redistribution />
-            ) : (
-            <section className="hero">
-              <h2>{active}</h2>
-              <p>
-                This module's data and workflows will be
-                connected during implementation.
-              </p>
-              <button onClick={() => navigate("Dashboard")}>
-                Return to dashboard
-              </button>
-            </section>
+          ) : active === "Surplus Listings" ? (
+            <>
+              <div className="page-heading">
+                <p className="section-kicker">FOOD RECOVERY</p>
+                <h1>Surplus Listings</h1>
+                <p>{current.desc}</p>
+              </div>
+              <SurplusListings />
+            </>
+          ) : active === "Redistribution" ? (
+            <>
+              <div className="page-heading">
+                <p className="section-kicker">FOOD RECOVERY</p>
+                <h1>Redistribution</h1>
+                <p>{current.desc}</p>
+              </div>
+              <Redistribution />
+            </>
+          ) : (
+            <>
+              <div className="page-heading">
+                <p className="section-kicker">FOODWISE WORKSPACE</p>
+                <h1>{active}</h1>
+                <p>{current.desc}</p>
+              </div>
+              <section className="preview-panel">
+                <span className="module-icon" aria-hidden="true"><current.icon size={24} strokeWidth={1.8} /></span>
+                <h2>{active}</h2>
+                <p>
+                  This module is planned for a later development stage.
+                  Its live data and workflows are not yet available.
+                </p>
+                <button className="back-button" onClick={() => navigate("Dashboard")}>
+                  Return to dashboard
+                </button>
+          
+              </section>
+            </>
           )}
-        </main>
+
+        {active === "Dashboard" && (
+  <>
+    <div className="overview-heading">
+      <div>
+        <p className="section-kicker">LIVE OPERATIONS</p>
+        <h2>Listings overview</h2>
+        <p className="last-updated">
+  {lastUpdated
+    ? `Last updated: ${lastUpdated}`
+    : "Waiting for data..."}
+</p>
       </div>
-    </>
+<button
+  type="button"
+  className="overview-label overview-refresh"
+  onClick={() => setRefreshKey((key) => key + 1)}
+  disabled={refreshing}
+>
+  {refreshing ? "Refreshing..." : "Refresh data"}
+</button>
+    </div>
+
+    <div className="dashboard-metrics">
+      {[
+        { label: "Available", value: summary?.available },
+        { label: "Reserved", value: summary?.reserved },
+        { label: "Collected", value: summary?.collected }
+      ].map((item) => (
+        <section
+          key={item.label}
+          className="preview-panel metric-card"
+        >
+          <p className="section-kicker">{item.label}</p>
+
+          <h2>
+            {listingsError
+              ? "Error"
+              : item.value ?? "Loading..."}
+          </h2>
+
+          <p>Food listings</p>
+        </section>
+      ))}
+    </div>
+
+    <button
+      type="button"
+      className="live-listings-button"
+      onClick={() => navigate("Redistribution")}
+    >
+      View available food
+      <ArrowRight size={17} />
+    </button>
+  </>
+)}
+        </div>
+      </main>
+    </div>
   );
 }
+
+export default App;

@@ -1,28 +1,157 @@
 const express = require("express");
 const FoodListing = require("../models/FoodListing");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../uploads"));
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+
+    if (!allowed.includes(file.mimetype)) {
+      return cb(new Error("Only JPEG, PNG and WebP photos are allowed"));
+    }
+
+    cb(null, true);
+  }
+});
 
 const router = express.Router();
-
-// Create a food listing
-router.post("/", async (req, res) => {
-  try {
-    const { foodName, quantity, unit, sourceType, sourceName, expiryAt } = req.body;
-
-    const listing = await FoodListing.create({
-      foodName,
-      quantity,
-      unit,
-      sourceType,
-      sourceName,
-      expiryAt
-    });
-
-    res.status(201).json(listing);
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      return res.status(400).json({ error: error.message });
+// Create a food listing with up to 5 photos
+router.post("/", (req, res) => {
+  upload.array("photo", 5)(req, res, async (uploadError) => {
+    if (uploadError) {
+      return res.status(400).json({
+        error: uploadError.message
+      });
     }
-    res.status(500).json({ error: "Unable to create listing" });
+
+    const files = req.files || [];
+
+    try {
+      const {
+  foodName,
+  quantity,
+  unit,
+  sourceType,
+  sourceName,
+  expiryAt,
+  cookedAt,
+  foodType,
+  pickupAddress,
+  contactName,
+  contactPhone,
+  retailOfferType,
+  originalPrice,
+  discountedPrice
+} = req.body;
+
+if (sourceType === "retailer") {
+  if (!["free", "discounted"].includes(retailOfferType)) {
+    throw new Error("Select a retail offer type.");
+  }
+
+  if (retailOfferType === "discounted") {
+    const original = Number(originalPrice);
+    const discounted = Number(discountedPrice);
+
+    if (
+      !Number.isFinite(original) ||
+      !Number.isFinite(discounted) ||
+      original <= 0 ||
+      discounted <= 0 ||
+      discounted >= original
+    ) {
+      throw new Error(
+        "Discounted price must be greater than zero and lower than the original price."
+      );
+    }
+  }
+}
+
+      const photoUrls = files.map(
+        (file) => `/uploads/${file.filename}`
+      );
+
+      const listing = await FoodListing.create({
+        foodName,
+        quantity,
+        unit,
+        sourceType,
+        sourceName,
+        expiryAt,
+        cookedAt,
+        foodType,
+        pickupAddress,
+        contactName,
+        contactPhone,
+                retailOfferType:
+          sourceType === "retailer"
+            ? retailOfferType
+            : undefined,
+
+        originalPrice:
+          sourceType === "retailer" &&
+          retailOfferType === "discounted"
+            ? originalPrice
+            : undefined,
+
+        discountedPrice:
+          sourceType === "retailer" &&
+          retailOfferType === "discounted"
+            ? discountedPrice
+            : undefined,
+        photoUrl: photoUrls[0],
+        photoUrls
+      });
+
+      return res.status(201).json(listing);
+    } catch (error) {
+      files.forEach((file) => {
+        fs.unlink(file.path, () => {});
+      });
+
+      return res.status(400).json({
+        error: error.message || "Unable to create listing"
+      });
+    }
+  });
+});
+  
+// Dashboard summary
+router.get("/summary", async (req, res) => {
+  try {
+    const [available, reserved, collected] = await Promise.all([
+      FoodListing.countDocuments({
+        status: "available",
+        expiryAt: { $gt: new Date() }
+      }),
+      FoodListing.countDocuments({ status: "reserved" }),
+      FoodListing.countDocuments({ status: "collected" })
+    ]);
+
+    res.json({
+      available,
+      reserved,
+      collected
+    });
+  } catch (error) {
+    console.error("Dashboard summary error:", error);
+    res.status(500).json({
+      message: "Unable to load dashboard summary"
+    });
   }
 });
 
@@ -130,40 +259,6 @@ router.patch("/:id/collect", async (req, res) => {
     return res.status(500).json({
       message: "Failed to collect listing",
       error: error.message
-    });
-  }
-});
-router.patch("/:id/collect", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!/^[a-fA-F0-9]{24}$/.test(id)) {
-      return res.status(400).json({
-        message: "Invalid listing ID"
-      });
-    }
-
-    const listing = await FoodListing.findOneAndUpdate(
-      {
-        _id: id,
-        status: "reserved"
-      },
-      {
-        $set: { status: "collected" }
-      },
-      { new: true, runValidators: true }
-    );
-
-    if (!listing) {
-      return res.status(409).json({
-        message: "Listing not found or not reserved"
-      });
-    }
-
-    return res.json(listing);
-  } catch (error) {
-    return res.status(500).json({
-      message: "Failed to mark listing as collected"
     });
   }
 });

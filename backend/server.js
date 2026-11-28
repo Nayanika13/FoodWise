@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve uploaded food photos
+app.use("/uploads", express.static("uploads"));
 const foodListingsRouter = require("./routes/foodListings");
 app.use("/api/listings", foodListingsRouter);
 
